@@ -723,6 +723,17 @@ export default class ExpensiMark {
             },
 
             {
+                // Slack pastes emoji characters as <img> tags with data-stringify-type="emoji".
+                // Replace them with the alt text (the actual emoji character) instead of converting to markdown image syntax.
+                name: 'slackEmoji',
+                regex: /<img[^><]*data-stringify-type\s*=\s*"emoji"[^><]*>(?![^<][\s\S]*?(<\/pre>|<\/code>))/gi,
+                replacement: (_extras, match) => {
+                    const altMatch = match.match(/alt\s*=\s*(['"])(.*?)\1/i);
+                    return altMatch ? altMatch[2] : '';
+                },
+            },
+
+            {
                 name: 'image',
                 regex: /<img[^><]*src\s*=\s*(['"])(.*?)\1(.*?)>(?![^<][\s\S]*?(<\/pre>|<\/code>))/gi,
                 /**
